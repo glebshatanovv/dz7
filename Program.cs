@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace ConsoleApp1
 {
@@ -6,25 +7,38 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
-            CheckFormat(100);
-            CheckFormat("Hello");
-            CheckFormat(12.2);
+            string inputFile = "first.txt";
+            string outputFile = "second.txt";
+
+            if (!File.Exists(inputFile))
+            {
+                Console.WriteLine("Файл не существует!");
+                return;
+            }
+
+            string[] lines = File.ReadAllLines(inputFile);
+
+            for (int i = 0; i < lines.Length; i++)
+            {
+                string s = lines[i];
+
+                SearchMail(ref s);
+
+                lines[i] = s;
+            }
+
+            File.WriteAllLines(outputFile, lines);
+
+            Console.WriteLine("Готово! Адреса записаны в second.txt");
         }
 
-        public static void CheckFormat(object value)
+        public static void SearchMail(ref string s)
         {
-            if (value is IFormattable)
-            {
-                Console.WriteLine("Объект реализует IFormattable");
+            int index = s.IndexOf('#');
 
-                IFormattable formatted = value as IFormattable;
-
-                Console.WriteLine("Форматированное значение: " +
-                                  formatted.ToString("F2", null));
-            }
-            else
+            if (index != -1)
             {
-                Console.WriteLine("Объект НЕ реализует IFormattable");
+                s = s.Substring(index + 1).Trim();
             }
         }
     }
