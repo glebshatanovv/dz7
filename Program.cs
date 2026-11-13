@@ -1,24 +1,31 @@
 ﻿using System;
-using System.IO;
+
+namespace ConsoleApp1
+{
     class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Введите имя файла:");
-            string fileName = Console.ReadLine();
+            CheckFormat(100);
+            CheckFormat("Hello");
+            CheckFormat(12.2);
+        }
 
-            if (!File.Exists(fileName))
+        public static void CheckFormat(object value)
+        {
+            if (value is IFormattable)
             {
-                Console.WriteLine("Файл не существует!");
-                return;
+                Console.WriteLine("Объект реализует IFormattable");
+
+                IFormattable formatted = value as IFormattable;
+
+                Console.WriteLine("Форматированное значение: " +
+                                  formatted.ToString("F2", null));
             }
-
-            string text = File.ReadAllText(fileName);
-
-            string upperText = text.ToUpper();
-
-            File.WriteAllText("output.txt", upperText);
-
-            Console.WriteLine("Готово! Результат записан в output.txt");
+            else
+            {
+                Console.WriteLine("Объект НЕ реализует IFormattable");
+            }
         }
     }
+}
