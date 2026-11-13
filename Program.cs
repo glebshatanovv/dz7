@@ -1,5 +1,6 @@
-﻿using System;
-using System.IO;
+﻿
+using System;
+using System.Collections.Generic;
 
 namespace ConsoleApp1
 {
@@ -7,39 +8,101 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
-            string inputFile = "first.txt";
-            string outputFile = "second.txt";
+            List<Song> songs = new List<Song>();
 
-            if (!File.Exists(inputFile))
+            Song song1 = new Song();
+            song1.SetName("Rosalia");
+            song1.SetAuthor("T-Fest");
+            song1.SetPrev(null);
+
+            Song song2 = new Song();
+            song2.SetName("back to friend");
+            song2.SetAuthor("sombr");
+            song2.SetPrev(song1);
+
+            Song song3 = new Song();
+            song3.SetName("Back Home");
+            song3.SetAuthor("Yeat");
+            song3.SetPrev(song2);
+
+            Song song4 = new Song();
+            song4.SetName("Царица");
+            song4.SetAuthor("ANNA ASTI");
+            song4.SetPrev(song3);
+
+            songs.Add(song1);
+            songs.Add(song2);
+            songs.Add(song3);
+            songs.Add(song4);
+
+            Console.WriteLine("Список песен:");
+
+            foreach (Song song in songs)
             {
-                Console.WriteLine("Файл не существует!");
-                return;
+                song.Print();
             }
 
-            string[] lines = File.ReadAllLines(inputFile);
+            Console.WriteLine();
 
-            for (int i = 0; i < lines.Length; i++)
+            Console.WriteLine("Сравнение первой и второй песни:");
+
+            if (songs[0].Equals(songs[1]))
             {
-                string s = lines[i];
-
-                SearchMail(ref s);
-
-                lines[i] = s;
+                Console.WriteLine("Песни одинаковые");
             }
+            else
+            {
+                Console.WriteLine("Песни разные");
+            }
+        }
+    }
 
-            File.WriteAllLines(outputFile, lines);
+    class Song
+    {
+        string name;
+        string author;
+        Song prev;
 
-            Console.WriteLine("Готово! Адреса записаны в second.txt");
+        public void SetName(string name)
+        {
+            this.name = name;
         }
 
-        public static void SearchMail(ref string s)
+        public void SetAuthor(string author)
         {
-            int index = s.IndexOf('#');
+            this.author = author;
+        }
 
-            if (index != -1)
+        public void SetPrev(Song prev)
+        {
+            this.prev = prev;
+        }
+
+        public void Print()
+        {
+            Console.WriteLine(Title());
+        }
+
+        public string Title()
+        {
+            return name + " - " + author;
+        }
+
+        public override bool Equals(object d)
+        {
+            if (d == null || !(d is Song))
             {
-                s = s.Substring(index + 1).Trim();
+                return false;
             }
+
+            Song other = (Song)d;
+
+            return name == other.name && author == other.author;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(name, author);
         }
     }
 }
