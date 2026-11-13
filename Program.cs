@@ -1,37 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
-
-namespace ConsoleApp1
-{
+using System.IO;
     class Program
     {
         static void Main(string[] args)
         {
-            string word = "glebas";
+            Console.WriteLine("Введите имя файла:");
+            string fileName = Console.ReadLine();
 
-            string result = ReverseWord(word);
-
-            Console.WriteLine("Исходное слово: " + word);
-            Console.WriteLine("Перевернутое слово: " + result);
-        }
-
-        public static string ReverseWord(string word)
-        {
-            Stack<char> stack = new Stack<char>();
-
-            foreach (char letter in word)
+            if (!File.Exists(fileName))
             {
-                stack.Push(letter);
+                Console.WriteLine("Файл не существует!");
+                return;
             }
 
-            string result = "";
+            string text = File.ReadAllText(fileName);
 
-            while (stack.Count > 0)
-            {
-                result += stack.Pop();
-            }
+            string upperText = text.ToUpper();
 
-            return result;
+            File.WriteAllText("output.txt", upperText);
+
+            Console.WriteLine("Готово! Результат записан в output.txt");
         }
     }
-}
